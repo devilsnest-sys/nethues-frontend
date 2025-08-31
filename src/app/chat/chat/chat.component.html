@@ -1,0 +1,43 @@
+<app-header></app-header>
+<div class="chat-page">
+  <mat-card class="chat-card">
+    <div #scrollContainer class="messages">
+      <div *ngFor="let m of messages" 
+           [ngClass]="{'msg-user': m.from==='user', 'msg-sys': m.from==='system'}" 
+           class="message">
+        <div class="bubble">
+
+          <!-- For user messages just show the expression -->
+          <ng-container *ngIf="m.from === 'user'">
+            <div class="text">{{ m.text }}</div>
+          </ng-container>
+
+          <!-- For system messages show expression, result & words -->
+          <ng-container *ngIf="m.from === 'system'">
+            <div class="text">Expression: {{ m.text }}</div>
+            <div *ngIf="m.numeric !== null">Result: {{ m.numeric }}</div>
+            <div *ngIf="m.words">In Words: {{ m.words }}</div>
+          </ng-container>
+
+          <!-- Timestamp -->
+          <div class="ts">{{ m.time | date:'short' }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <form (submit)="send(); $event.preventDefault()" class="composer-form">
+        <mat-form-field class="composer-input" appearance="outline">
+          <input matInput placeholder="Enter arithmetic expression, e.g. 2 + 4"
+                 [(ngModel)]="input"
+                 name="input"
+                 autocomplete="off" />
+        </mat-form-field>
+        <button mat-icon-button color="primary" (click)="send()" [disabled]="sending">
+          <mat-icon *ngIf="!sending">send</mat-icon>
+          <mat-progress-spinner *ngIf="sending" diameter="24" mode="indeterminate"></mat-progress-spinner>
+        </button>
+      </form>
+    </div>
+  </mat-card>
+</div>
